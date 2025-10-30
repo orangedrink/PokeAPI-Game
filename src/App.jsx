@@ -92,7 +92,7 @@ export default function App() {
                 <Pokemon pokemon={player} />
             </div>
             <div className='button-panel'>
-                {!gamestate && (
+                {!gamestate ? (
                     <Buttons
                         player={player}
                         enemy={enemy}
@@ -104,6 +104,14 @@ export default function App() {
                         capture={capture}
                         continue={continueGame}
                     />
+                ) : (
+                    <div>
+                        <h2 className='victory-title'>You win!</h2>
+                        <button className='action-button' onClick={() => capture()}
+                        >Capture {enemy?.name}</button>
+
+                        <button className='action-button' onClick={() => pcontinue()}>Continue with {player?.name}</button>
+                    </div>
                 )}
             </div>
             {messages && <Console messages={messages} />}
