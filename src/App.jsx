@@ -36,8 +36,8 @@ export default function App() {
 
             });
     }
-    const timer = () => {
-        log(`${enemy?.name} is ready to fight!`);
+    const timer = (enemy) => {
+        //log(`${enemy?.name} is ready to fight!`);
         console.log(`${enemy?.name} is ready to fight!`);
     }
     useEffect(() => {
