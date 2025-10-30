@@ -1,4 +1,6 @@
 :root {
+    /* Global UI scale: lower to make everything smaller (e.g., 0.85) */
+    --ui-scale: .65;
     --bg-gradient: radial-gradient(circle at top left, rgba(255, 83, 112, 0.3), transparent 55%),
         radial-gradient(circle at 20% 80%, rgba(87, 173, 255, 0.25), transparent 60%),
         radial-gradient(circle at 80% 20%, rgba(255, 224, 102, 0.28), transparent 55%),
@@ -24,47 +26,52 @@ body {
     font-family: 'Poppins', 'Segoe UI', system-ui, -apple-system, sans-serif;
     background: var(--bg-gradient);
     color: var(--text-primary);
+    font-size: 14px;
 }
 
 .game-app {
     min-height: 100vh;
-    width: 100%;
+    /* Inverse width to compensate for transform scaling below */
+    width: 100vw;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 2.75rem 1.5rem 4rem;
-    gap: 1.5rem;
+    padding: 1.75rem 1rem 2.5rem;
+    gap: 1rem;
     background: transparent;
+    /* Uniformly scale the entire app content */
+    transform: scale(var(--ui-scale));
+    transform-origin: top center;
 }
 
 .game-header {
     width: min(100%, 1100px);
     background: var(--surface-glass);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 26px;
-    padding: 1.35rem 1.75rem;
+    border-radius: 18px;
+    padding: 0.9rem 1.2rem;
     box-shadow: var(--shadow-elevated);
-    backdrop-filter: blur(18px);
+    backdrop-filter: blur(12px);
 }
 
 .header-content {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    gap: 1rem;
 }
 
 .header-logo {
-    width: 60px;
-    height: 60px;
-    border-radius: 18px;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
     object-fit: contain;
-    padding: 0.35rem;
+    padding: 0.25rem;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
     box-shadow: 0 12px 30px rgba(255, 95, 109, 0.45);
 }
 
 .header-title {
-    font-size: clamp(1.75rem, 2.5vw, 2.6rem);
+    font-size: 0.9em;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -77,15 +84,15 @@ body {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 1.75rem;
+    gap: 1.1rem;
 }
 
 .pokemon-card {
-    flex: 1 1 320px;
-    max-width: 500px;
+    flex: 1 1 280px;
+    max-width: 420px;
     background: var(--surface-glass);
-    border-radius: 28px;
-    padding: 2.25rem;
+    border-radius: 18px;
+    padding: 1.4rem;
     position: relative;
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -105,8 +112,8 @@ body {
 }
 
 .pokemon-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 28px 60px rgba(5, 6, 15, 0.55);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(5, 6, 15, 0.5);
 }
 
 .pokemon-card:hover::before {
@@ -119,12 +126,12 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1.25rem;
+    gap: 0.9rem;
     text-align: center;
 }
 
 .pokemon-name {
-    font-size: clamp(1.8rem, 2.4vw, 2.4rem);
+    font-size: clamp(1.4rem, 2vw, 2rem);
     letter-spacing: 0.12em;
     text-transform: uppercase;
     margin: 0;
@@ -132,7 +139,7 @@ body {
 }
 
 .pokemon-image {
-    width: min(65%, 220px);
+    width: min(55%, 180px);
     filter: drop-shadow(0 20px 25px rgba(0, 0, 0, 0.35));
     image-rendering: pixelated;
 }
@@ -143,17 +150,18 @@ body {
     margin: 0;
     padding: 0;
     display: grid;
-    gap: 0.65rem;
+    gap: 0.5rem;
 }
 
 .pokemon-stat {
-    padding: 0.75rem 1rem;
-    border-radius: 16px;
+    padding: 0.55rem 0.8rem;
+    border-radius: 12px;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
     border: 1px solid rgba(255, 255, 255, 0.04);
     color: var(--text-secondary);
     font-weight: 500;
     letter-spacing: 0.04em;
+    font-size: 0.9rem;
 }
 
 .loading-message {
@@ -168,10 +176,10 @@ body {
     color: #0b0d16;
     font-weight: 700;
     letter-spacing: 0.08em;
-    padding: 0.95rem 2.4rem;
+    padding: 0.7rem 1.6rem;
     border-radius: 999px;
-    margin-right: 1rem;
-    margin-bottom: 1.25rem;
+    margin-right: 0.75rem;
+    margin-bottom: 0.9rem;
     cursor: pointer;
     transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
     box-shadow: 0 14px 28px rgba(255, 95, 109, 0.35);
@@ -179,7 +187,8 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.35rem;
+    gap: 0.25rem;
+    font-size: 0.9rem;
 }
 
 .action-button:focus-visible {
@@ -201,7 +210,7 @@ body {
 }
 
 .victory-title {
-    font-size: clamp(2rem, 3vw, 2.6rem);
+    font-size: clamp(1.6rem, 2.4vw, 2.2rem);
     margin: 0.5rem 0 1.5rem;
     text-transform: uppercase;
     letter-spacing: 0.16em;
@@ -211,19 +220,19 @@ body {
 
 .cooldown-indicator {
     color: var(--text-secondary);
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     letter-spacing: 0.05em;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
 }
 
 .console-panel {
     width: min(100%, 1100px);
     background: var(--surface-glass);
-    border-radius: 24px;
-    padding: 1.75rem 2rem;
+    border-radius: 16px;
+    padding: 1.2rem 1.4rem;
     border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: var(--shadow-soft);
-    backdrop-filter: blur(16px);
+    backdrop-filter: blur(12px);
 }
 
 .console-messages {
@@ -232,38 +241,39 @@ body {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
-    max-height: 260px;
+    gap: 0.6rem;
+    max-height: 200px;
     overflow-y: auto;
     scrollbar-width: thin;
 }
 
 .console-messages::-webkit-scrollbar {
-    width: 6px;
+    width: 5px;
 }
 
 .console-messages::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.2);
-    border-radius: 12px;
+    border-radius: 10px;
 }
 
 .console-message {
     background: linear-gradient(135deg, rgba(95, 251, 241, 0.15), rgba(95, 251, 241, 0));
     border: 1px solid rgba(95, 251, 241, 0.25);
-    border-radius: 14px;
-    padding: 0.9rem 1.1rem;
+    border-radius: 10px;
+    padding: 0.7rem 0.9rem;
     color: #bff7ff;
     font-family: 'Fira Code', 'Source Code Pro', monospace;
     letter-spacing: 0.03em;
+    font-size: 0.9rem;
 }
 
 @media (max-width: 768px) {
     .game-app {
-        padding: 2.25rem 1.1rem 3rem;
+        padding: 1.5rem 0.7rem 2rem;
     }
 
     .battle-stage {
-        gap: 1.2rem;
+        gap: 0.9rem;
     }
 
     .action-button {

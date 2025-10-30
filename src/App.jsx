@@ -74,69 +74,42 @@ export default function App() {
                 <Pokemon pokemon={enemy} />
                 <Pokemon pokemon={player} />
             </div>
-            <button
-                className='action-button'
-                onClick={playerAttack}
-                disabled={!player || !enemy || cooldown}
-            >
-                Attack
-            </button>
-            {
-                player?.abilities.map(ab => (
-                    <button
-                        key={ab}
-                        className='action-button'
-                        onClick={() => useAbility(ab.replace('-', '_'))}
-                        disabled={cooldown}
-                    >
-                        {`Use ${ab} Ability`}
-                    </button>
-                ))
-            }
-            {!gamestate && (
+            <div className='button-panel'>
+                    {!gamestate && (
 
-                <button className='action-button' onClick={() => {
-                    const dam = Math.max(1, player.attack - enemy.defense);
-                    enemy.setStat('hp', enemy.hp - dam);
-                    setEnemy(enemy);
-                    log(`${player.name} attacked ${enemy.name} for ${dam} damage!`);
-                    if (enemy.hp <= 0) {
-                        log(`${enemy.name} has fainted! ${player.name} wins!`);
-                        setGamestate('won');
+                        <button className='action-button' onClick={() => playerAttack()} disabled={cooldown
+                        }>Attack</button>
+                    )}
+                    {
+                        !gamestate && player?.abilities.map(ab => (
+                            <button key={ab} disabled={cooldown} className='action-button' onClick={() => useAbility(ab.replace('-', '_'), player, enemy, log)}>Use {ab} Ability</button>
+                        ))
                     }
-                }
-                }>Attack</button>
-            )}
-            {
-                !gamestate && player?.abilities.map(ab => (
-                    <button key={ab} className='action-button' onClick={() => useAbility(ab.replace('-', '_'), player, enemy, log)}>Use {ab} Ability</button>
-                ))
-            }
-            {gamestate && (
-                <>
-                    <h2 className='victory-title'>You win!</h2>
-                    <button className='action-button' onClick={() => {
-                        setGamestate('');
-                        const playerPromise = new PokemonClass(enemy.name)
-                        getEnemy();
-                        playerPromise.then((playerInstance) => {
-                            setPlayer(playerInstance)
-                        });
-                    }}
-                    >Capture {enemy.name}</button>
+                    {gamestate && (
+                        <>
+                            <h2 className='victory-title'>You win!</h2>
+                            <button className='action-button' onClick={() => {
+                                setGamestate('');
+                                const playerPromise = new PokemonClass(enemy.name)
+                                getEnemy();
+                                playerPromise.then((playerInstance) => {
+                                    setPlayer(playerInstance)
+                                });
+                            }}
+                            >Capture {enemy.name}</button>
 
-                    <button className='action-button' onClick={() => {
-                        setGamestate('');
-                        const playerPromise = new PokemonClass(player.name)
-                        getEnemy();
-                        playerPromise.then((playerInstance) => {
-                            setPlayer(playerInstance)
-                        });
-                    }}>Continue with {player.name}</button>
+                            <button className='action-button' onClick={() => {
+                                setGamestate('');
+                                const playerPromise = new PokemonClass(player.name)
+                                getEnemy();
+                                playerPromise.then((playerInstance) => {
+                                    setPlayer(playerInstance)
+                                });
+                            }}>Continue with {player.name}</button>
 
-                </>
-            )}
-
+                        </>
+                    )}
+</div>
             {messages && <Console messages={messages} />}
 
         </div>
