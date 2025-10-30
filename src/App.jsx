@@ -15,7 +15,7 @@ export default function App() {
     const [cooldown, setCooldown] = useState(false);
     const log = (msg) => {
         console.log(msg);
-        setMessages(prev => [msg, ...prev]);
+        setMessages(prev => [...prev, msg]);
     }
     const useAbility = ((ability) => {
         setCooldown(true);

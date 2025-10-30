@@ -40,9 +40,11 @@ body {
         opacity: 0;
     }
 }
+
 .button-panel {
     text-align: center;
 }
+
 .game-app {
     /* Inverse width to compensate for transform scaling below */
     width: 100vw;
@@ -253,6 +255,7 @@ body {
     border: none;
     box-shadow: none;
     z-index: 5;
+    height: 0;
 }
 
 .console-messages {
@@ -264,6 +267,9 @@ body {
     gap: 0.6rem;
     overflow: visible;
     scrollbar-width: thin;
+    border: none;
+    background: transparent;
+    height: 2em;
 }
 
 .console-messages::-webkit-scrollbar {
@@ -288,6 +294,9 @@ body {
     opacity: 1;
     animation: consoleFloat 6s cubic-bezier(0.33, 0.07, 0.19, 0.97) forwards;
     will-change: transform, opacity;
+    font-size: 2em;
+    position: absolute;
+
 }
 
 @media (max-width: 768px) {

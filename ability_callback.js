@@ -32,8 +32,8 @@ sand_veil: (attacker, defender) => {
   return `${attacker.name} used sand-veil (hp +4)`
 },
 static: (attacker, defender) => {
-  attacker.setStat('attack', attacker.attack + 1)
-  return `${attacker.name} used static (attack +1)`
+  attacker.setStat('attack', attacker.attack + 10)
+  return `${attacker.name} used static (attack +10)`
 },
 volt_absorb: (attacker, defender) => {
   attacker.setStat('hp', attacker.hp + 1)
