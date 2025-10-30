@@ -28,6 +28,18 @@ body {
     color: var(--text-primary);
     font-size: 14px;
 }
+
+@keyframes consoleFloat {
+    0% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(-160px);
+        opacity: 0;
+    }
+}
 .button-panel {
     text-align: center;
 }
@@ -44,6 +56,7 @@ body {
     transform: scale(var(--ui-scale));
     transform-origin: top center;
     max-height: 100vh;
+    position: relative;
 }
 
 .game-header {
@@ -229,22 +242,27 @@ body {
 
 .console-panel {
     width: min(100%, 1100px);
-    background: var(--surface-glass);
+    position: absolute;
+    left: 50%;
+    bottom: 3rem;
+    transform: translateX(-50%);
+    pointer-events: none;
+    background: linear-gradient(135deg, rgba(15, 21, 40, 0.55), rgba(15, 21, 40, 0));
     border-radius: 16px;
-    padding: 1.2rem 1.4rem;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: var(--shadow-soft);
-    backdrop-filter: blur(12px);
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    z-index: 5;
 }
 
 .console-messages {
     margin: 0;
-    padding: 0;
+    padding: 0 1.4rem 0.6rem;
     list-style: none;
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
     gap: 0.6rem;
-    overflow-y: auto;
+    overflow: visible;
     scrollbar-width: thin;
 }
 
@@ -258,14 +276,18 @@ body {
 }
 
 .console-message {
-    background: linear-gradient(135deg, rgba(95, 251, 241, 0.15), rgba(95, 251, 241, 0));
-    border: 1px solid rgba(95, 251, 241, 0.25);
+    background: linear-gradient(135deg, rgba(95, 251, 241, 0.22), rgba(95, 251, 241, 0));
+    border: 1px solid rgba(95, 251, 241, 0.35);
     border-radius: 10px;
     padding: 0.7rem 0.9rem;
     color: #bff7ff;
     font-family: 'Fira Code', 'Source Code Pro', monospace;
     letter-spacing: 0.03em;
     font-size: 0.9rem;
+    transform: translateY(0);
+    opacity: 1;
+    animation: consoleFloat 6s cubic-bezier(0.33, 0.07, 0.19, 0.97) forwards;
+    will-change: transform, opacity;
 }
 
 @media (max-width: 768px) {
