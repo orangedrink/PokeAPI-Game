@@ -3,10 +3,10 @@ import { useState, useEffect } from 'react';
 export default function Console(props) {
 
     return (
-        <div className='container p-4 rounded bg-warning bg-opacity-10'>
-            <ul>
+        <div className='console-panel'>
+            <ul className='console-messages'>
                 {props.messages?.map(msg => (
-                    <li>{msg}</li>
+                    <li className='console-message'>{msg}</li>
                 ))}
             </ul>
         </div>
