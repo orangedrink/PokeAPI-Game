@@ -4,21 +4,21 @@ import PokemonClass from '../../pokemon.js';
 export default function Pokemon(props) {
 
     return (
-        <div className='container p-4 rounded bg-warning bg-opacity-10 flex-grow-1 mb-4 w-50'>
+        <div className='pokemon-card'>
             {props.pokemon ? (
-                <div>
-                    <h2>{props.pokemon.name}</h2>
-                    <img src={props.pokemon?.sprites?.front_default} alt={props.pokemon.name} />
-                    <ul>
-                        <li>HP: {props.pokemon.hp}</li>
-                        <li>Speed: {props.pokemon.speed}</li>
-                        <li>Attack: {props.pokemon.attack}</li>
-                        <li>Defense: {props.pokemon.defense}</li>
-                        <li>Abilities: {props.pokemon.abilities?.join(', ')}</li>
+                <div className='pokemon-card-body'>
+                    <h2 className='pokemon-name'>{props.pokemon.name}</h2>
+                    <img className='pokemon-image' src={props.pokemon?.sprites?.front_default} alt={props.pokemon.name} />
+                    <ul className='pokemon-stats'>
+                        <li className='pokemon-stat'>HP: {props.pokemon.hp}</li>
+                        <li className='pokemon-stat'>Speed: {props.pokemon.speed}</li>
+                        <li className='pokemon-stat'>Attack: {props.pokemon.attack}</li>
+                        <li className='pokemon-stat'>Defense: {props.pokemon.defense}</li>
+                        <li className='pokemon-stat'>Abilities: {props.pokemon.abilities?.join(', ')}</li>
                     </ul>
                 </div>
             ) : (
-                <p>Loading data for {name}...</p>
+                <p className='loading-message'>Loading data for {name}...</p>
             )}
         </div>
     );

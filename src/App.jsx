@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import logo from '../ui/pokeapi_256.png';
+import '../ui/game-theme.css';
 import PokemonClass from '../pokemon.js';
 import Pokemon from './components/Pokemon.jsx';
 import Console from './components/Console.jsx';
@@ -106,19 +107,19 @@ export default function App() {
 
 
     return (
-        <div className='container'>
-            <header className="py-3 mb-4 border-bottom shadow-sm text-white bg-primary">
-                <div className="container d-flex align-items-center gap-3">
-                    <img src={logo} alt="PokéAPI" height="40" className="d-inline-block img-fluid" style={{ width: 'auto', height: '40px' }} />
-                    <h1 className="h3 m-0">The PokeAPI Game</h1>
+        <div className='game-app'>
+            <header className="game-header">
+                <div className="header-content">
+                    <img src={logo} alt="PokéAPI" height="40" className="header-logo" style={{ width: 'auto', height: '40px' }} />
+                    <h1 className="header-title">The PokeAPI Game</h1>
                 </div>
             </header>
-            <div className='d-flex flex-row justify-content-around align-items-start mb-4'>
+            <div className='battle-stage'>
                 <Pokemon pokemon={enemy} />
                 <Pokemon pokemon={player} />
             </div>
             <button
-                className='btn btn-primary me-2 mb-4'
+                className='action-button'
                 onClick={handleAttack}
                 disabled={!player || !enemy || isOnCooldown}
             >
@@ -128,15 +129,17 @@ export default function App() {
                 player?.abilities.map(ab => (
                     <button
                         key={ab}
-                        className='btn btn-primary me-2 mb-4'
+                        className='action-button'
                         onClick={() => useAbility(ab.replace('-', '_'))}
                         disabled={isOnCooldown}
                     >
                         {isOnCooldown ? `Use ${ab} Ability (cooldown ${cooldownSeconds}s)` : `Use ${ab} Ability`}
                     </button>
+                ))
+            }
             {!gamestate && (
 
-                <button className='btn btn-primary me-2 mb-4' onClick={() => {
+                <button className='action-button' onClick={() => {
                     const dam = Math.max(1, player.attack - enemy.defense);
                     enemy.setStat('hp', enemy.hp - dam);
                     setEnemy(enemy);
@@ -150,13 +153,13 @@ export default function App() {
             )}
             {
                 !gamestate && player?.abilities.map(ab => (
-                    <button key={ab} className='btn btn-primary me-2 mb-4' onClick={() => useAbility(ab.replace('-', '_'), player, enemy, log)}>Use {ab} Ability</button>
+                    <button key={ab} className='action-button' onClick={() => useAbility(ab.replace('-', '_'), player, enemy, log)}>Use {ab} Ability</button>
                 ))
             }
             {gamestate && (
                 <>
-                    <h2>You win!</h2>
-                    <button className='btn btn-primary me-2 mb-4' onClick={() => {
+                    <h2 className='victory-title'>You win!</h2>
+                    <button className='action-button' onClick={() => {
                         setGamestate('');
                         const playerPromise = new PokemonClass(enemy.name)
                         getEnemy();
@@ -165,7 +168,7 @@ export default function App() {
                         });
                     }}>Capture {enemy.name}</button>
 
-                    <button className='btn btn-primary me-2 mb-4' onClick={() => {
+                    <button className='action-button' onClick={() => {
                         setGamestate('');
                         const playerPromise = new PokemonClass(player.name)
                         getEnemy();
@@ -178,7 +181,7 @@ export default function App() {
             )}
 
             {isOnCooldown && (
-                <div className="text-muted mb-3">
+                <div className="cooldown-indicator">
                     Actions available in {cooldownSeconds} second{cooldownSeconds === 1 ? '' : 's'}.
                 </div>
             )}
