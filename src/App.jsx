@@ -34,6 +34,7 @@ export default function App() {
                 const enemyPromise = new PokemonClass(name)
                 enemyPromise.then((enemyInstance) => {
                     setEnemy(enemyInstance);
+                    log(`A wild ${enemy.name} has appeared`)
                 });
 
             });
@@ -59,8 +60,10 @@ export default function App() {
         setEnemy(enemy);
         log(`${player.name} attacked ${enemy.name} for ${dam} damage!`);
         if (enemy.hp <= 0) {
-            log(`${enemy.name} has fainted! ${player.name} wins!`);
-            setGamestate('won');
+            setTimeout(() => {
+                log(`${enemy.name} has fainted! ${player.name} wins!`);
+                setGamestate('won');
+            }, 1000)
         }
     }
     const capture = () => {
@@ -110,7 +113,7 @@ export default function App() {
                         <button className='action-button' onClick={() => capture()}
                         >Capture {enemy?.name}</button>
 
-                        <button className='action-button' onClick={() => pcontinue()}>Continue with {player?.name}</button>
+                        <button className='action-button' onClick={() => continueGame()}>Continue with {player?.name}</button>
                     </div>
                 )}
             </div>

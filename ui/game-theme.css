@@ -34,9 +34,11 @@ body {
         transform: translateY(0);
         opacity: 1;
     }
-
+    50% {
+        opacity: 1;
+    }
     100% {
-        transform: translateY(-160px);
+        transform: translateY(-260px);
         opacity: 0;
     }
 }
@@ -245,6 +247,7 @@ body {
 .console-panel {
     width: min(100%, 1100px);
     position: absolute;
+    top: 140vh;
     left: 50%;
     bottom: 3rem;
     transform: translateX(-50%);
@@ -270,6 +273,7 @@ body {
     border: none;
     background: transparent;
     height: 2em;
+    
 }
 
 .console-messages::-webkit-scrollbar {
@@ -282,7 +286,7 @@ body {
 }
 
 .console-message {
-    background: linear-gradient(135deg, rgba(95, 251, 241, 0.22), rgba(95, 251, 241, 0));
+    background: linear-gradient(135deg, rgb(40, 41, 41), rgba(95, 251, 241, 0));
     border: 1px solid rgba(95, 251, 241, 0.35);
     border-radius: 10px;
     padding: 0.7rem 0.9rem;
@@ -294,8 +298,11 @@ body {
     opacity: 1;
     animation: consoleFloat 6s cubic-bezier(0.33, 0.07, 0.19, 0.97) forwards;
     will-change: transform, opacity;
-    font-size: 2em;
+    font-size: 1.2em;
     position: absolute;
+    width: 100%;
+    text-align: center;
+
 
 }
 
