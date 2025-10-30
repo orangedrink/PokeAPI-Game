@@ -63,7 +63,7 @@ export default function App() {
             setTimeout(() => {
                 log(`${enemy.name} has fainted! ${player.name} wins!`);
                 setGamestate('won');
-            }, 1000)
+            }, 2000)
         }
     }
     const capture = () => {
