@@ -7,7 +7,7 @@
         #05060f;
     --surface-glass: rgba(15, 21, 40, 0.85);
     --surface-highlight: rgba(255, 255, 255, 0.06);
-    --accent-primary: #ff5f6d;
+    --accent-primary: hsl(43, 100%, 69%);
     --accent-secondary: #ffc371;
     --accent-focus: #5ffbf1;
     --text-primary: #f5f8ff;
@@ -85,8 +85,6 @@ body {
     border-radius: 12px;
     object-fit: contain;
     padding: 0.25rem;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
-    box-shadow: 0 12px 30px rgba(255, 95, 109, 0.45);
 }
 
 .header-title {
@@ -160,7 +158,6 @@ body {
 .pokemon-image {
     width: min(55%, 180px);
     filter: drop-shadow(0 20px 25px rgba(0, 0, 0, 0.35));
-    image-rendering: pixelated;
 }
 
 .pokemon-stats {

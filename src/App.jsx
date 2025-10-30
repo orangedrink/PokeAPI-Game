@@ -34,7 +34,7 @@ export default function App() {
                 const enemyPromise = new PokemonClass(name)
                 enemyPromise.then((enemyInstance) => {
                     setEnemy(enemyInstance);
-                    log(`A wild ${enemy.name} has appeared`)
+                    log(`A wild ${enemyInstance.name} has appeared`)
                 });
 
             });
@@ -91,8 +91,8 @@ export default function App() {
                 </div>
             </header>
             <div className='battle-stage'>
-                <Pokemon pokemon={enemy} />
                 <Pokemon pokemon={player} />
+                <Pokemon pokemon={enemy} />
             </div>
             <div className='button-panel'>
                 {!gamestate ? (
