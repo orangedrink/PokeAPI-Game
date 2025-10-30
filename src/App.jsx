@@ -5,6 +5,7 @@ import PokemonClass from '../pokemon.js';
 import Pokemon from './components/Pokemon.jsx';
 import Console from './components/Console.jsx';
 import abilityCallbacks from '../ability_callback.js';
+import Buttons from './components/Buttons.jsx';
 
 export default function App() {
     const [enemy, setEnemy] = useState(null);
@@ -47,7 +48,7 @@ export default function App() {
         playerPromise.then((playerInstance) => {
             setPlayer(playerInstance)
         });
-        const id = setInterval(timer, 1000);
+        const id = setInterval(timer, 10000);
         return () => clearInterval(id);
     }, []);
     const playerAttack = () => {
@@ -62,6 +63,22 @@ export default function App() {
             setGamestate('won');
         }
     }
+    const capture = () => {
+        setGamestate('');
+        const playerPromise = new PokemonClass(enemy.name)
+        getEnemy();
+        playerPromise.then((playerInstance) => {
+            setPlayer(playerInstance)
+        });
+    }
+    const continueGame = () => {
+        setGamestate('');
+        const playerPromise = new PokemonClass(player?.name)
+        getEnemy();
+        playerPromise.then((playerInstance) => {
+            setPlayer(playerInstance)
+        });
+    }
     return (
         <div className='game-app'>
             <header className="game-header">
@@ -75,43 +92,21 @@ export default function App() {
                 <Pokemon pokemon={player} />
             </div>
             <div className='button-panel'>
-                    {!gamestate && (
-
-                        <button className='action-button' onClick={() => playerAttack()} disabled={cooldown
-                        }>Attack</button>
-                    )}
-                    {
-                        !gamestate && player?.abilities.map(ab => (
-                            <button key={ab} disabled={cooldown} className='action-button' onClick={() => useAbility(ab.replace('-', '_'), player, enemy, log)}>Use {ab} Ability</button>
-                        ))
-                    }
-                    {gamestate && (
-                        <>
-                            <h2 className='victory-title'>You win!</h2>
-                            <button className='action-button' onClick={() => {
-                                setGamestate('');
-                                const playerPromise = new PokemonClass(enemy.name)
-                                getEnemy();
-                                playerPromise.then((playerInstance) => {
-                                    setPlayer(playerInstance)
-                                });
-                            }}
-                            >Capture {enemy.name}</button>
-
-                            <button className='action-button' onClick={() => {
-                                setGamestate('');
-                                const playerPromise = new PokemonClass(player.name)
-                                getEnemy();
-                                playerPromise.then((playerInstance) => {
-                                    setPlayer(playerInstance)
-                                });
-                            }}>Continue with {player.name}</button>
-
-                        </>
-                    )}
-</div>
+                {!gamestate && (
+                    <Buttons
+                        player={player}
+                        enemy={enemy}
+                        gamestate={gamestate}
+                        cooldown={cooldown}
+                        playerAttack={playerAttack}
+                        useAbility={useAbility}
+                        setGamestate={setGamestate}
+                        capture={capture}
+                        continue={continueGame}
+                    />
+                )}
+            </div>
             {messages && <Console messages={messages} />}
-
         </div>
     );
 }

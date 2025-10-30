@@ -30,7 +30,6 @@ body {
 }
 
 .game-app {
-    min-height: 100vh;
     /* Inverse width to compensate for transform scaling below */
     width: 100vw;
     display: flex;
@@ -42,6 +41,7 @@ body {
     /* Uniformly scale the entire app content */
     transform: scale(var(--ui-scale));
     transform-origin: top center;
+    max-height: 100vh;
 }
 
 .game-header {
