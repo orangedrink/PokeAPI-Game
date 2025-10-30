@@ -10,10 +10,14 @@ export default function App() {
     const [player, setPlayer] = useState(null);
     const [messages, setMessages] = useState([]);
     const [gamestate, setGamestate] = useState('');
+    const [cooldown, setCooldown] = useState(false);
     const log = (msg) => {
+        console.log(msg);
         setMessages(prev => [msg, ...prev]);
     }
     const useAbility = ((ability) => {
+        setCooldown(true);
+        setTimeout(() => setCooldown(false), 3000 - (player.speed * 20));
         const msg = abilityCallbacks[ability](player, enemy);
         setPlayer(player);
         setEnemy(enemy);
@@ -27,10 +31,14 @@ export default function App() {
                 const name = data.results[randomIndex]?.name;
                 const enemyPromise = new PokemonClass(name)
                 enemyPromise.then((enemyInstance) => {
-                    setEnemy(enemyInstance)
+                    setEnemy(enemyInstance);
                 });
 
             });
+    }
+    const timer = () => {
+        log(`${enemy?.name} is ready to fight!`);
+        console.log(`${enemy?.name} is ready to fight!`);
     }
     useEffect(() => {
         getEnemy();
@@ -38,10 +46,21 @@ export default function App() {
         playerPromise.then((playerInstance) => {
             setPlayer(playerInstance)
         });
-
+        const id = setInterval(timer, 1000);
+        return () => clearInterval(id);
     }, []);
-
-
+    const playerAttack = () => {
+        const dam = Math.max(1, player.attack - enemy.defense);
+        setCooldown(true);
+        setTimeout(() => setCooldown(false), 3000 - (player.speed * 20));
+        enemy.setStat('hp', enemy.hp - dam);
+        setEnemy(enemy);
+        log(`${player.name} attacked ${enemy.name} for ${dam} damage!`);
+        if (enemy.hp <= 0) {
+            log(`${enemy.name} has fainted! ${player.name} wins!`);
+            setGamestate('won');
+        }
+    }
     return (
         <div className='container'>
             <header className="py-3 mb-4 border-bottom shadow-sm text-white bg-primary">
@@ -55,23 +74,13 @@ export default function App() {
                 <Pokemon pokemon={player} />
             </div>
             {!gamestate && (
-
-                <button className='btn btn-primary me-2 mb-4' onClick={() => {
-                    const dam = Math.max(1, player.attack - enemy.defense);
-                    enemy.setStat('hp', enemy.hp - dam);
-                    setEnemy(enemy);
-                    log(`${player.name} attacked ${enemy.name} for ${dam} damage!`);
-                    if (enemy.hp <= 0) {
-                        log(`${enemy.name} has fainted! ${player.name} wins!`);
-                        setGamestate('won');
-                    }
-                }
-                }>Attack</button>
+                <button className='btn btn-primary me-2 mb-4' onClick={() => playerAttack()}
+                    disabled={cooldown}
+                >Attack</button>
             )}
-            {
-                !gamestate && player?.abilities.map(ab => (
-                    <button key={ab} className='btn btn-primary me-2 mb-4' onClick={() => useAbility(ab.replace('-', '_'), player, enemy, log)}>Use {ab} Ability</button>
-                ))
+            {!gamestate && player?.abilities.map(ability => (
+                <button key={ability} disabled={cooldown} className='btn btn-primary me-2 mb-4' onClick={() => useAbility(ability.replace('-', '_'), player, enemy)} >Use {ability} Ability</button>
+            ))
             }
             {gamestate && (
                 <>
@@ -83,7 +92,8 @@ export default function App() {
                         playerPromise.then((playerInstance) => {
                             setPlayer(playerInstance)
                         });
-                    }}>Capture {enemy.name}</button>
+                    }}
+                    >Capture {enemy.name}</button>
 
                     <button className='btn btn-primary me-2 mb-4' onClick={() => {
                         setGamestate('');
@@ -98,6 +108,7 @@ export default function App() {
             )}
 
             {messages && <Console messages={messages} />}
+
         </div>
     );
 }

@@ -8,7 +8,7 @@ export default function Pokemon(props) {
             {props.pokemon ? (
                 <div>
                     <h2>{props.pokemon.name}</h2>
-                    <img src={props.pokemon?.sprites?.front_default} alt={props.pokemon.name} />
+                    <img src={props.pokemon?.sprites?.front_default||'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/351.png'} alt={props.pokemon.name} />
                     <ul>
                         <li>HP: {props.pokemon.hp}</li>
                         <li>Speed: {props.pokemon.speed}</li>
