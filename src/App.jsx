@@ -10,8 +10,9 @@ export default function App() {
     const [player, setPlayer] = useState(null);
     const [messages, setMessages] = useState([]);
     const [cooldownRemaining, setCooldownRemaining] = useState(0);
+    const [gamestate, setGamestate] = useState('');
     const log = (msg) => {
-        setMessages(prev => [...prev, msg]);
+        setMessages(prev => [msg, ...prev]);
     }
     const calculateCooldownDuration = (speed) => {
         const maxCooldown = 5000; // 5 seconds for very slow Pokémon
@@ -80,6 +81,8 @@ export default function App() {
         startCooldown();
     };
     useEffect(() => {
+    });
+    const getEnemy = () => {
         fetch('https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0')
             .then(response => response.json())
             .then(async data => {
@@ -90,11 +93,15 @@ export default function App() {
                     setEnemy(enemyInstance)
                 });
 
-                const playerPromise = new PokemonClass('paras')
-                playerPromise.then((playerInstance) => {
-                    setPlayer(playerInstance)
-                });
             });
+    }
+    useEffect(() => {
+        getEnemy();
+        const playerPromise = new PokemonClass('pikachu')
+        playerPromise.then((playerInstance) => {
+            setPlayer(playerInstance)
+        });
+
     }, []);
 
 
@@ -127,8 +134,48 @@ export default function App() {
                     >
                         {isOnCooldown ? `Use ${ab} Ability (cooldown ${cooldownSeconds}s)` : `Use ${ab} Ability`}
                     </button>
+            {!gamestate && (
+
+                <button className='btn btn-primary me-2 mb-4' onClick={() => {
+                    const dam = Math.max(1, player.attack - enemy.defense);
+                    enemy.setStat('hp', enemy.hp - dam);
+                    setEnemy(enemy);
+                    log(`${player.name} attacked ${enemy.name} for ${dam} damage!`);
+                    if (enemy.hp <= 0) {
+                        log(`${enemy.name} has fainted! ${player.name} wins!`);
+                        setGamestate('won');
+                    }
+                }
+                }>Attack</button>
+            )}
+            {
+                !gamestate && player?.abilities.map(ab => (
+                    <button key={ab} className='btn btn-primary me-2 mb-4' onClick={() => useAbility(ab.replace('-', '_'), player, enemy, log)}>Use {ab} Ability</button>
                 ))
             }
+            {gamestate && (
+                <>
+                    <h2>You win!</h2>
+                    <button className='btn btn-primary me-2 mb-4' onClick={() => {
+                        setGamestate('');
+                        const playerPromise = new PokemonClass(enemy.name)
+                        getEnemy();
+                        playerPromise.then((playerInstance) => {
+                            setPlayer(playerInstance)
+                        });
+                    }}>Capture {enemy.name}</button>
+
+                    <button className='btn btn-primary me-2 mb-4' onClick={() => {
+                        setGamestate('');
+                        const playerPromise = new PokemonClass(player.name)
+                        getEnemy();
+                        playerPromise.then((playerInstance) => {
+                            setPlayer(playerInstance)
+                        });
+                    }}>Continue with {player.name}</button>
+
+                </>
+            )}
 
             {isOnCooldown && (
                 <div className="text-muted mb-3">
