@@ -120,8 +120,8 @@ natural_cure: (attacker, defender) => {
   return `${attacker.name} used natural-cure (hp +1)`
 },
 lightning_rod: (attacker, defender) => {
-  attacker.setStat('hp', attacker.hp + 1)
-  return `${attacker.name} used lightning-rod (hp +1)`
+  attacker.setStat('hp', attacker.hp + 15)
+  return `${attacker.name} used lightning-rod (hp +15)`
 },
 serene_grace: (attacker, defender) => {
   attacker.setStat('attack', attacker.attack + 3)
