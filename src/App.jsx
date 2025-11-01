@@ -7,6 +7,106 @@ import Console from './components/Console.jsx';
 import abilityCallbacks from '../ability_callback.js';
 import Buttons from './components/Buttons.jsx';
 import Deck from './components/Deck.jsx';
+
+// Pure JS explosion animation at a screen coordinate (x, y)
+// Usage: explodeAt( x, y, { radius?: number, particles?: number, duration?: number, color?: string, sparkColor?: string } )
+export function explodeAt(x, y, opts = {}) {
+    const radius = Math.max(10, opts.radius ?? 60);
+    const particles = Math.max(4, Math.min(40, opts.particles ?? 12));
+    const duration = Math.max(200, opts.duration ?? 700);
+    const ringColor = opts.color ?? 'rgba(255, 165, 0, 0.9)'; // orange
+    const sparkColor = opts.sparkColor ?? '#fff';
+
+    // Allow caller to target player/enemy elements instead of passing coords
+    // Uses the center of the relevant '.pokemon-card' image as the origin.
+    try {
+        const targetFlag = opts.target ?? opts.side; // accept either key
+        if (targetFlag === 'player' || targetFlag === 'enemy') {
+            let el = null;
+            if (targetFlag === 'player') {
+                el = document.querySelector('.pokemon-card.player .pokemon-image')
+                    || document.querySelector('.pokemon-card.player')
+                    || document.querySelector('.battle-stage .pokemon-card:nth-child(1) .pokemon-image');
+            } else {
+                el = document.querySelector('.pokemon-card.enemy .pokemon-image')
+                    || document.querySelector('.pokemon-card.enemy')
+                    || document.querySelector('.battle-stage .pokemon-card:nth-child(2) .pokemon-image');
+            }
+            if (el) {
+                const rect = el.getBoundingClientRect();
+                x = rect.left + rect.width / 2;
+                y = rect.top + rect.height / 2;
+            }
+        }
+    } catch { }
+
+    // Container positioned around the coordinate
+    const size = radius * 2;
+    const container = document.createElement('div');
+    container.style.position = 'fixed';
+    container.style.left = `${Math.round(x - radius)}px`;
+    container.style.top = `${Math.round(y - radius)}px`;
+    container.style.width = `${size}px`;
+    container.style.height = `${size}px`;
+    container.style.pointerEvents = 'none';
+    container.style.zIndex = 9999;
+
+    // Ring pulse
+    const ring = document.createElement('div');
+    Object.assign(ring.style, {
+        position: 'absolute',
+        left: '0',
+        top: '0',
+        width: '100%',
+        height: '100%',
+        borderRadius: '50%',
+        border: `3px solid ${ringColor}`,
+        boxShadow: `0 0 18px ${ringColor}`,
+        opacity: '0.9',
+    });
+    container.appendChild(ring);
+
+    // Animate ring via Web Animations API
+    ring.animate([
+        { transform: 'scale(0.2)', opacity: 0.9 },
+        { transform: 'scale(1.15)', opacity: 0.0 }
+    ], { duration, easing: 'cubic-bezier(.22,.61,.36,1)', fill: 'forwards' });
+
+    // Particles
+    for (let i = 0; i < particles; i++) {
+        const p = document.createElement('div');
+        const sz = Math.max(2, Math.min(8, Math.round(radius / 10)));
+        Object.assign(p.style, {
+            position: 'absolute',
+            left: `${radius - sz / 2}px`,
+            top: `${radius - sz / 2}px`,
+            width: `${sz}px`,
+            height: `${sz}px`,
+            borderRadius: '50%',
+            background: sparkColor,
+            boxShadow: `0 0 8px ${sparkColor}`,
+        });
+        container.appendChild(p);
+
+        // Random direction and distance
+        const angle = (Math.PI * 2 * i) / particles + Math.random() * 0.4 - 0.2;
+        const dist = radius * (0.55 + Math.random() * 0.6);
+        const dx = Math.cos(angle) * dist;
+        const dy = Math.sin(angle) * dist;
+
+        // Animate particle
+        p.animate([
+            { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+            { transform: `translate(${dx}px, ${dy}px) scale(0.6)`, opacity: 0 }
+        ], { duration, easing: 'cubic-bezier(.22,.61,.36,1)', fill: 'forwards' });
+    }
+
+    document.body.appendChild(container);
+    // Cleanup after animation
+    window.setTimeout(() => {
+        container.remove();
+    }, duration + 60);
+}
 export default function App() {
     const [enemy, setEnemy] = useState(null);
     const [player, setPlayer] = useState(null);
@@ -99,6 +199,7 @@ export default function App() {
                 const playerPromise = new PokemonClass(getNextPlayer(player?.name));
                 playerPromise.then((playerInstance) => {
                     setPlayer(playerInstance)
+                    explodeAt(null, null, { side: 'player', radius: 100, particles: 30, duration: 800, color: 'rgba(255,0,0,0.9)', sparkColor: '#ff0' });
                     getEnemy(playerInstance, enemy);
                     log(`${player?.name} has fainted! you send out ${playerInstance?.name}!`, 'player');
                 });
@@ -135,6 +236,7 @@ export default function App() {
             player.hp > 0 && enemy.hp > 0 ? playerAttack(player, enemy) : null;
         }, player.getIntervalDelay());
         if (enemy.hp <= 0) {
+            explodeAt(null, null, { side: 'enemy', radius: 100, particles: 30, duration: 800, color: 'rgba(255,0,0,0.9)', sparkColor: '#ff0' });
             setGamestate('won');
             setTimeout(() => {
                 log(`${enemy.name} has fainted! ${player.name} wins!`, 'player');
