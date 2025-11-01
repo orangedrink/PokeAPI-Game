@@ -208,10 +208,7 @@ export default function App() {
         }
     }
     const getNextPlayer = (currentPlayer) => {
-        if (playersArray.indexOf(currentPlayer) === playersArray.length - 1) {
-            return false;
-        }
-        const player = playersArray[playersArray.indexOf(currentPlayer) + 1] || playersArray[0];
+        const player = playersArray[playersArray.indexOf(currentPlayer) + 1] || false;
         return player;
 
     }
@@ -249,7 +246,9 @@ export default function App() {
         setGamestate('');
         clearInterval(intervalIdEnemy);
         setPlayersArray(prev => [...prev, enemy.name]);
-        localStorage.setItem('playersArray', JSON.stringify([...playersArray, enemy.name]));
+        if (!playersArray.includes(enemy.name)) {
+            localStorage.setItem('playersArray', JSON.stringify([...playersArray, enemy.name]));
+        }
         const playerPromise = new PokemonClass(playersArray[0])
         playerPromise.then((playerInstance) => {
             setPlayer(playerInstance)
