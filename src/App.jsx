@@ -208,7 +208,10 @@ export default function App() {
         }
     }
     const getNextPlayer = (currentPlayer) => {
-        const player = playersArray[playersArray.indexOf(currentPlayer) + 1] || false;
+        if (playersArray.indexOf(currentPlayer) === playersArray.length - 1) {
+            return false;
+        }
+        const player = playersArray[playersArray.indexOf(currentPlayer) + 1] || playersArray[0];
         return player;
 
     }
