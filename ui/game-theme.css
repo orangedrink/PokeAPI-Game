@@ -13,7 +13,7 @@
     --text-primary: #f5f8ff;
     --text-secondary: #a5b7d3;
     --shadow-elevated: 0 22px 45px rgba(5, 6, 15, 0.55);
-    --shadow-soft: 0 16px 30px rgba(5, 6, 15, 0.35);
+    --shadow-soft: 0 16px 30px rgba(5, 6, 15, 0.901);
 }
 
 * {
@@ -27,6 +27,7 @@ body {
     background: var(--bg-gradient);
     color: var(--text-primary);
     font-size: 14px;
+    background-attachment: fixed;
 }
 
 @keyframes consoleFloat {
@@ -34,17 +35,18 @@ body {
         transform: translateY(0);
         opacity: 1;
     }
-    20% {
+    60% {
         opacity: 1;
     }
     100% {
-        transform: translateY(-260px);
+        transform: translateY(-80px);
         opacity: 0;
     }
 }
 
 .button-panel {
     text-align: center;
+    width: min(100%, 1100px);
 }
 
 .game-app {
@@ -158,7 +160,7 @@ body {
     padding: 1.4rem;
     position: relative;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 4px solid #e4e3e3;
     box-shadow: var(--shadow-soft);
     transition: transform 180ms ease, box-shadow 180ms ease;
 }
@@ -194,7 +196,7 @@ body {
 }
 
 .pokemon-name {
-    font-size: clamp(1.4rem, 2vw, 2rem);
+    font-size: 1.5em;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     margin: 0;
@@ -202,8 +204,28 @@ body {
 }
 
 .pokemon-image {
-    width: min(55%, 180px);
+    width: auto;
+    height: 143px;
     filter: drop-shadow(0 20px 25px rgba(0, 0, 0, 0.35));
+}
+
+/* Enemy sprite entrance animation: slide in from left */
+@keyframes enemy-slide-in-right {
+    from {
+        transform: translateX(150%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Target the enemy card (second Pokémon in battle-stage) */
+.battle-stage .pokemon-card.enemy .pokemon-image {
+    animation: enemy-slide-in-right 600ms ease-out both;
+    will-change: transform, opacity;
 }
 
 .pokemon-stats {
@@ -221,9 +243,46 @@ body {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
     border: 1px solid rgba(255, 255, 255, 0.04);
     color: var(--text-secondary);
+    border: 4px solid var(--stat-color, rgba(255, 255, 255, 0.12));
     font-weight: 500;
     letter-spacing: 0.04em;
     font-size: 0.9rem;
+}
+
+/* Fun, bright colors per stat (based on list order) */
+.pokemon-stats .pokemon-stat:nth-child(1) {
+    /* HP */
+    --stat-color: #ef4444;
+    /* red */
+    color: #ff7a7a;
+}
+
+.pokemon-stats .pokemon-stat:nth-child(2) {
+    /* Speed */
+    --stat-color: #facc15;
+    /* bright yellow */
+    color: #fde68a;
+}
+
+.pokemon-stats .pokemon-stat:nth-child(3) {
+    /* Attack */
+    --stat-color: #1c2ea1;
+    /* vivid orange */
+    color: #3c55fb;
+}
+
+.pokemon-stats .pokemon-stat:nth-child(4) {
+    /* Defense */
+    --stat-color: #22c55e;
+    /* bright green */
+    color: #86efac;
+}
+
+.pokemon-stats .pokemon-stat:nth-child(5) {
+    /* Abilities */
+    --stat-color: #b0b0b0;
+    /* soft violet */
+    color: #b0b0b0;
 }
 
 .loading-message {
@@ -288,15 +347,12 @@ body {
 }
 
 .console-panel {
-    width: min(100%, 1100px);
+    width: 100%;
     position: absolute;
-    top: 140vh;
+    top: 65px;
     left: 50%;
-    bottom: 3rem;
-    transform: translateX(-50%);
+    transform: translateX(-55%);
     pointer-events: none;
-    background: linear-gradient(135deg, rgba(15, 21, 40, 0.55), rgba(15, 21, 40, 0));
-    border-radius: 16px;
     padding: 0;
     border: none;
     box-shadow: none;
@@ -316,7 +372,7 @@ body {
     border: none;
     background: transparent;
     height: 2em;
-    
+    text-shadow: #05060f 0px 1px 3px;
 }
 
 .console-messages::-webkit-scrollbar {
@@ -329,17 +385,15 @@ body {
 }
 
 .console-message {
-    background: linear-gradient(135deg, rgb(40, 41, 41), rgba(95, 251, 241, 0));
-    border: 1px solid rgba(95, 251, 241, 0.35);
-    border-radius: 10px;
-    padding: 0.7rem 0.9rem;
+    background: transparent;
+    border: none;
     color: #bff7ff;
     font-family: 'Fira Code', 'Source Code Pro', monospace;
     letter-spacing: 0.03em;
-    font-size: 0.9rem;
+    font-size: 0.5rem;
     transform: translateY(0);
     opacity: 1;
-    animation: consoleFloat 6s cubic-bezier(0.33, 0.07, 0.19, 0.97) forwards;
+    animation: consoleFloat 3s cubic-bezier(0.33, 0.07, 0.19, 0.97) forwards;
     will-change: transform, opacity;
     font-size: 1.2em;
     position: absolute;
@@ -347,6 +401,15 @@ body {
     text-align: center;
 
 
+}
+
+.console-message.damage {
+    top: 120px;
+    color: #e62020;
+    font-weight: bold;
+    font-size: 2.4em;
+    z-index: 15;
+    animation-duration: 1s;
 }
 
 @media (max-width: 768px) {

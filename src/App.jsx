@@ -10,17 +10,25 @@ import Deck from './components/Deck.jsx';
 export default function App() {
     const [enemy, setEnemy] = useState(null);
     const [player, setPlayer] = useState(null);
-    const [messages, setMessages] = useState([]);
+    const [playerMessages, setPlayerMessages] = useState([]);
+    const [enemyMessages, setEnemyMessages] = useState([]);
     const [gamestate, setGamestate] = useState('');
     const [cooldown, setCooldown] = useState(false);
     const [intervalId, setIntervalId] = useState(false);
-    const PLAYERS_ARRAY = localStorage.getItem('playersArray') ? JSON.parse(localStorage.getItem('playersArray')) : ['pikachu', 'bulbasaur', 'squirtle'];
+    const PLAYERS_ARRAY = localStorage.getItem('playersArray') ? JSON.parse(localStorage.getItem('playersArray')) : ['melmetal-gmax', 'pikachu', 'bulbasaur', 'squirtle'];
     const [playersArray, setPlayersArray] =
         useState(PLAYERS_ARRAY);
-    
-    const log = (msg) => {
+    const log = (msg, card, msgtype) => {
         console.log(msg);
-        setMessages(prev => [...prev, msg]);
+        let msgObj = {
+            text: msg,
+            type: msgtype || 'info'
+        };
+        if (card === 'player') {
+            setPlayerMessages(prev => [...prev, msgObj]);
+        } else if (card === 'enemy') {
+            setEnemyMessages(prev => [...prev, msgObj]);
+        }
     }
     const useAbility = ((ability) => {
         setCooldown(true);
@@ -28,7 +36,7 @@ export default function App() {
         const msg = abilityCallbacks[ability](player, enemy);
         setPlayer(player);
         setEnemy(enemy);
-        log(msg);
+        log(msg, 'player');
     });
     const setEnemyClass = (enemyInstance, player) => {
         setEnemy(enemyInstance, player);
@@ -50,7 +58,7 @@ export default function App() {
                     const enemyPromise = new PokemonClass(data.results[randomIndex]?.name)
                     enemyPromise.then((enemyInstance) => {
                         setEnemyClass(enemyInstance, player);
-                        log(`A wild ${enemyInstance.name} has appeared`);
+                        log(`A wild ${enemyInstance.name} has appeared`, 'enemy');
 
                     });
                 });
@@ -58,22 +66,23 @@ export default function App() {
     }
     const lose = (enemy, player) => {
         setTimeout(() => {
-            log(`${player?.name} has fainted! ${enemy?.name} wins!`);
+            log(`${player?.name} has fainted! ${enemy?.name} wins!`, 'player');
         }, 2000)
         setGamestate('lost');
     }
     const enemyTimer = (enemy, player) => {
         const chance = Math.random();
-        if(chance < 0.25 && enemy.abilities.length > 0){
+        if (chance < 0.25 && enemy.abilities.length > 0) {
             let ability = enemy.abilities[Math.floor(Math.random() * enemy.abilities.length)];
             const msg = abilityCallbacks[ability.replace('-', '_')](enemy, player);
-            log(msg); 
+            log(msg, 'enemy');
             setPlayer(player);
             setEnemy(enemy);
         } else {
             let dam = enemy.attack - player.defense
             dam = dam > 1 ? dam : 1;
-            log(`${enemy?.name} attacks! hp -${dam}`);
+            log(`${enemy?.name} attacks!`, 'enemy');
+            player.hp && log(`-${dam}`, 'player', 'damage');
             player.setStat('hp', player.hp - dam);
             setPlayer(player);
         }
@@ -85,11 +94,10 @@ export default function App() {
                 playerPromise.then((playerInstance) => {
                     setPlayer(playerInstance)
                     getEnemy(playerInstance, enemy);
-                    setTimeout(() => {
-                        log(`${player?.name} has fainted! you send out ${playerInstance?.name}!`);
-                    }, 2000)
+                    log(`${player?.name} has fainted! you send out ${playerInstance?.name}!`, 'player');
                 });
             }
+        } else {
         }
     }
     const getNextPlayer = (currentPlayer) => {
@@ -116,12 +124,12 @@ export default function App() {
             setCooldown(false)
         }, 4000 - (player.speed * 20));
         enemy.setStat('hp', enemy.hp - dam);
-        setEnemy(enemy);
-        log(`${player.name} attacked ${enemy.name} for ${dam} damage!`);
+        log(`${player.name} attacks!`, 'player',);
+        log(`-${dam}`, 'enemy', 'damage');
         if (enemy.hp <= 0) {
+            setGamestate('won');
             setTimeout(() => {
-                log(`${enemy.name} has fainted! ${player.name} wins!`);
-                setGamestate('won');
+                log(`${enemy.name} has fainted! ${player.name} wins!`, 'player');
                 clearInterval(intervalId);
             }, 2000)
         }
@@ -136,6 +144,7 @@ export default function App() {
         playerPromise.then((playerInstance) => {
             setPlayer(playerInstance)
             getEnemy(playerInstance);
+            setEnemyMessages([]);
         });
     }
 
@@ -147,6 +156,7 @@ export default function App() {
         playerPromise.then((playerInstance) => {
             setPlayer(playerInstance)
             getEnemy(playerInstance);
+            setEnemyMessages([]);
         });
     }
 
@@ -173,12 +183,11 @@ export default function App() {
                     />
                 ) : gamestate === 'won' ? (
                     <div>
-                        <h2 className='victory-title'>You win!&nbsp;
+                        <strong className='victory-title'>You win!&nbsp;
                             <button className='action-button' onClick={() => capture()}
                             >Capture {enemy?.name}</button>
-
                             <button className='action-button' onClick={() => continueGame()}>Continue without {enemy?.name}</button>
-                        </h2>
+                        </strong>
                     </div>
                 ) : gamestate === 'lost' ? (
                     <div>
@@ -189,11 +198,10 @@ export default function App() {
                 ) : null}
             </div>
             <div className='battle-stage'>
-                <Pokemon pokemon={player} />
-                <Pokemon pokemon={enemy} />
+                <Pokemon pokemon={player} className="player" player={true} messages={playerMessages} />
+                <Pokemon key={enemy?.name} className="enemy" pokemon={enemy} player={false} messages={enemyMessages} />
             </div>
-            <Deck playersArray={playersArray} activePokemon={player?.name} />
-            {messages && <Console messages={messages} />}
+            <Deck playersArray={playersArray} activePokemon={player?.name} setPlayersArray={setPlayersArray} />
         </div>
     );
 }
