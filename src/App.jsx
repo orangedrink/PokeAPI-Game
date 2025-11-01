@@ -6,6 +6,7 @@ import Pokemon from './components/Pokemon.jsx';
 import Console from './components/Console.jsx';
 import abilityCallbacks from '../ability_callback.js';
 import Buttons from './components/Buttons.jsx';
+import Deck from './components/Deck.jsx';
 export default function App() {
     const [enemy, setEnemy] = useState(null);
     const [player, setPlayer] = useState(null);
@@ -13,10 +14,10 @@ export default function App() {
     const [gamestate, setGamestate] = useState('');
     const [cooldown, setCooldown] = useState(false);
     const [intervalId, setIntervalId] = useState(false);
-
-    const PLAYERS_ARRAY = localStorage.getItem('playersArray') ? JSON.parse(localStorage.getItem('playersArray')) : ['pikachu', 'charmander', 'bulbasaur', 'squirtle'];
+    const PLAYERS_ARRAY = localStorage.getItem('playersArray') ? JSON.parse(localStorage.getItem('playersArray')) : ['pikachu', 'bulbasaur', 'squirtle'];
     const [playersArray, setPlayersArray] =
         useState(PLAYERS_ARRAY);
+    
     const log = (msg) => {
         console.log(msg);
         setMessages(prev => [...prev, msg]);
@@ -29,27 +30,29 @@ export default function App() {
         setEnemy(enemy);
         log(msg);
     });
-    const setEnemyClass = (name, player) => {
-        const enemyPromise = new PokemonClass(name)
-        enemyPromise.then((enemyInstance) => {
-            setEnemy(enemyInstance);
-            setIntervalId(setInterval(() => {
-                //console.log('enemy timer tick ' + player.hp);
-                player.hp ? enemyTimer(enemyInstance, player) : null;
-            }, 8000 - (enemyInstance.speed * 30)));
-        });
+    const setEnemyClass = (enemyInstance, player) => {
+        setEnemy(enemyInstance, player);
+        setIntervalId(setInterval(() => {
+            //console.log('enemy timer tick ' + player.hp);
+            player.hp ? enemyTimer(enemyInstance, player) : null;
+        }, 8000 - (enemyInstance.speed * 30)));
+
     }
-    const getEnemy = (player, name) => {
-        if (name) {
-            setEnemyClass(name, player);
+    const getEnemy = (player, enemy) => {
+        setCooldown(false);
+        if (enemy) {
+            setEnemyClass(enemy, player);
         } else {
             fetch('https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0')
                 .then(response => response.json())
                 .then(async data => {
                     const randomIndex = Math.floor(Math.random() * data.results.length);
-                    setEnemyClass(data.results[randomIndex]?.name, player);
-                    log(`A wild ${data.results[randomIndex]?.name} has appeared`);
+                    const enemyPromise = new PokemonClass(data.results[randomIndex]?.name)
+                    enemyPromise.then((enemyInstance) => {
+                        setEnemyClass(enemyInstance, player);
+                        log(`A wild ${enemyInstance.name} has appeared`);
 
+                    });
                 });
         }
     }
@@ -60,11 +63,20 @@ export default function App() {
         setGamestate('lost');
     }
     const enemyTimer = (enemy, player) => {
-        let dam = enemy.attack - player.defense
-        dam = dam > 1 ? dam : 1;
-        log(`${enemy?.name} attacks! hp -${dam}`);
-        player.setStat('hp', player.hp - dam);
-        setPlayer(player);
+        const chance = Math.random();
+        if(chance < 0.25 && enemy.abilities.length > 0){
+            let ability = enemy.abilities[Math.floor(Math.random() * enemy.abilities.length)];
+            const msg = abilityCallbacks[ability.replace('-', '_')](enemy, player);
+            log(msg); 
+            setPlayer(player);
+            setEnemy(enemy);
+        } else {
+            let dam = enemy.attack - player.defense
+            dam = dam > 1 ? dam : 1;
+            log(`${enemy?.name} attacks! hp -${dam}`);
+            player.setStat('hp', player.hp - dam);
+            setPlayer(player);
+        }
         if (player.hp <= 0) {
             if (!getNextPlayer(player?.name)) {
                 lose(enemy, player);
@@ -72,7 +84,7 @@ export default function App() {
                 const playerPromise = new PokemonClass(getNextPlayer(player?.name));
                 playerPromise.then((playerInstance) => {
                     setPlayer(playerInstance)
-                    getEnemy(playerInstance, enemy?.name);
+                    getEnemy(playerInstance, enemy);
                     setTimeout(() => {
                         log(`${player?.name} has fainted! you send out ${playerInstance?.name}!`);
                     }, 2000)
@@ -100,7 +112,9 @@ export default function App() {
     const playerAttack = () => {
         const dam = Math.max(1, player.attack - enemy.defense);
         setCooldown(true);
-        setTimeout(() => setCooldown(false), 4000 - (player.speed * 20));
+        setTimeout(() => {
+            setCooldown(false)
+        }, 4000 - (player.speed * 20));
         enemy.setStat('hp', enemy.hp - dam);
         setEnemy(enemy);
         log(`${player.name} attacked ${enemy.name} for ${dam} damage!`);
@@ -159,23 +173,26 @@ export default function App() {
                     />
                 ) : gamestate === 'won' ? (
                     <div>
-                        <h2 className='victory-title'>You win!</h2>
-                        <button className='action-button' onClick={() => capture()}
-                        >Capture {enemy?.name}</button>
+                        <h2 className='victory-title'>You win!&nbsp;
+                            <button className='action-button' onClick={() => capture()}
+                            >Capture {enemy?.name}</button>
 
-                        <button className='action-button' onClick={() => continueGame()}>Continue with {player?.name}</button>
+                            <button className='action-button' onClick={() => continueGame()}>Continue without {enemy?.name}</button>
+                        </h2>
                     </div>
                 ) : gamestate === 'lost' ? (
                     <div>
-                        <h2 className='defeat-title'>You lost!</h2>
-                        <button className='action-button' onClick={() => continueGame()}>Try Again</button>
+                        <h2 className='defeat-title'>You lost!&nbsp;
+                            <button className='action-button' onClick={() => continueGame()}>Try Again</button>
+                        </h2>
                     </div>
                 ) : null}
             </div>
             <div className='battle-stage'>
                 <Pokemon pokemon={player} />
                 <Pokemon pokemon={enemy} />
-            </div>{JSON.stringify(playersArray)}
+            </div>
+            <Deck playersArray={playersArray} activePokemon={player?.name} />
             {messages && <Console messages={messages} />}
         </div>
     );

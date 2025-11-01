@@ -104,6 +104,52 @@ body {
     gap: 1.1rem;
 }
 
+.active {
+    font-weight: bold;
+    font-size: large;
+}
+
+/* Deck grid layout */
+.lineup-container {
+    width: min(100%, 1100px);
+}
+
+.deck-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0.75rem;
+    align-items: stretch;
+}
+
+.deck-grid .card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    background: var(--surface-glass);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 0.5rem;
+    text-align: center;
+}
+
+.deck-grid .card .nm {
+    color: var(--text-primary);
+    text-transform: capitalize;
+    font-size: 0.9rem;
+}
+
+.deck-grid .card .ph {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+.deck-grid .card.active {
+    outline: 2px solid var(--accent-focus);
+    outline-offset: -2px;
+}
+
 .pokemon-card {
     flex: 1 1 280px;
     max-width: 420px;
