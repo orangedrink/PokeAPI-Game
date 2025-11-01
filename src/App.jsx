@@ -36,7 +36,8 @@ export default function App() {
         const msg = abilityCallbacks[ability](player, enemy);
         setPlayer(player);
         setEnemy(enemy);
-        log(msg, 'player');
+        log(msg.attackerMsg, 'player');
+        log(msg.affectedMsg.text, msg.affectedMsg.affected === 'attacker' ? 'player' : 'enemy', msg.affectedMsg.type || 'damage');
     });
     const setEnemyClass = (enemyInstance, player) => {
         setEnemy(enemyInstance, player);
@@ -72,10 +73,11 @@ export default function App() {
     }
     const enemyTimer = (enemy, player) => {
         const chance = Math.random();
-        if (chance < 0.25 && enemy.abilities.length > 0) {
+        if (chance < .2 && enemy.abilities.length > 0) {
             let ability = enemy.abilities[Math.floor(Math.random() * enemy.abilities.length)];
             const msg = abilityCallbacks[ability.replace('-', '_')](enemy, player);
-            log(msg, 'enemy');
+            log(msg.attackerMsg, 'enemy');
+            log(msg.affectedMsg.text, msg.affectedMsg.affected === 'attacker' ? 'enemy' : 'player', msg.affectedMsg.type || 'damage');
             setPlayer(player);
             setEnemy(enemy);
         } else {

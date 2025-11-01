@@ -412,6 +412,33 @@ body {
     animation-duration: 1s;
 }
 
+.console-message.speed {
+    top: 190px;
+    color: #e6c520;
+    font-weight: bold;
+    font-size: 2.4em;
+    z-index: 15;
+    animation-duration: 1s;
+}
+
+.console-message.attack {
+    top: 240px;
+    color: #3e20e6;
+    font-weight: bold;
+    font-size: 2.4em;
+    z-index: 15;
+    animation-duration: 1s;
+}
+
+.console-message.defense {
+    top: 280px;
+    color: #20e64b;
+    font-weight: bold;
+    font-size: 2.4em;
+    z-index: 15;
+    animation-duration: 1s;
+}
+
 @media (max-width: 768px) {
     .game-app {
         padding: 1.5rem 0.7rem 2rem;
