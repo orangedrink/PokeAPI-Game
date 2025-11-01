@@ -11,11 +11,11 @@ export default function Pokemon(props) {
                     <h4 className='pokemon-name'>{props.pokemon.name}</h4>
                     <img className='pokemon-image' src={props.pokemon?.sprites?.front_default} alt={props.pokemon.name} />
                     <ul className='pokemon-stats'>
-                        <li className='pokemon-stat'>HP: {props.pokemon.hp}</li>
-                        <li className='pokemon-stat'>Speed: {props.pokemon.speed}</li>
-                        <li className='pokemon-stat'>Attack: {props.pokemon.attack}</li>
-                        <li className='pokemon-stat'>Defense: {props.pokemon.defense}</li>
-                        <li className='pokemon-stat'>Abilities: {props.pokemon.abilities?.join(', ')}</li>
+                        <li className='pokemon-stat hp'>HP: {props.pokemon.hp}</li>
+                        <li className='pokemon-stat speed'>Speed: {props.pokemon.speed}</li>
+                        <li className='pokemon-stat attack'>Attack: {props.pokemon.attack}</li>
+                        <li className='pokemon-stat defense'>Defense: {props.pokemon.defense}</li>
+                        <li className='pokemon-stat abilities'>Abilities: {props.pokemon.abilities?.join(', ')}</li>
                     </ul>
                     <Console key={props.pokemon.id} messages={props.messages} />
                 </div>

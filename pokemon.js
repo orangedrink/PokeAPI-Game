@@ -33,15 +33,19 @@ class PokemonClass {
       throw new Error(`Invalid stat: ${stat}. Expected one of ${STAT_KEYS.join(', ')}`);
     }
     const num = toInt(value);
-/*     if (stat === 'hp') {
-      if (num <= this.maxHp) {
-        this.hp = value;
-      }else{
-        this.hp = this.maxHp;
-      }
-    } */ 
-   this[stat] = Math.max(0, num);
+    /*     if (stat === 'hp') {
+          if (num <= this.maxHp) {
+            this.hp = value;
+          }else{
+            this.hp = this.maxHp;
+          }
+        } */
+    this[stat] = Math.max(0, num);
     return this;
+  }
+
+  getIntervalDelay() {
+    return 3000 - (this.speed * 10);
   }
 }
 

@@ -154,7 +154,7 @@ body {
 
 .pokemon-card {
     flex: 1 1 280px;
-    max-width: 420px;
+    max-width: 390px;
     background: var(--surface-glass);
     border-radius: 18px;
     padding: 1.4rem;
@@ -250,35 +250,35 @@ body {
 }
 
 /* Fun, bright colors per stat (based on list order) */
-.pokemon-stats .pokemon-stat:nth-child(1) {
+.pokemon-stats .pokemon-stat.hp {
     /* HP */
     --stat-color: #ef4444;
     /* red */
     color: #ff7a7a;
 }
 
-.pokemon-stats .pokemon-stat:nth-child(2) {
+.pokemon-stats .pokemon-stat.speed {
     /* Speed */
     --stat-color: #facc15;
     /* bright yellow */
     color: #fde68a;
 }
 
-.pokemon-stats .pokemon-stat:nth-child(3) {
+.pokemon-stats .pokemon-stat.attack {
     /* Attack */
     --stat-color: #1c2ea1;
     /* vivid orange */
     color: #3c55fb;
 }
 
-.pokemon-stats .pokemon-stat:nth-child(4) {
+.pokemon-stats .pokemon-stat.defense {
     /* Defense */
     --stat-color: #22c55e;
     /* bright green */
     color: #86efac;
 }
 
-.pokemon-stats .pokemon-stat:nth-child(5) {
+.pokemon-stats .pokemon-stat.abilities {
     /* Abilities */
     --stat-color: #b0b0b0;
     /* soft violet */
