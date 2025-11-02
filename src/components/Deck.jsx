@@ -30,7 +30,9 @@ export default function Deck({ playersArray = [], activePokemon, setPlayersArray
                 const json = await res.json();
                 if (json.errors) throw new Error(json.errors.map(e => e.message).join("; "));
                 const deckData = (json.data?.pokemon ?? []).map(p => {
+                    
                     const raw = p?.pokemonsprites;
+                    console.log('raw sprites', raw);
                     let front = null;
                     front = raw[0].sprites.front_default;
                     return { name: p.name, sprite: front };
