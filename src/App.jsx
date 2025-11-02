@@ -147,7 +147,9 @@ export default function App() {
             enemyInstance.hp > 0 && player.hp > 0 ? enemyTimer(enemyInstance, player) : null;
         }, enemyInstance.getIntervalDelay()));
         clearInterval(intervalIdPlayer);
-        playerAttack(player, enemyInstance);
+        setIntervalIdPlayer(setTimeout(() => {
+            playerAttack(player, enemyInstance);
+        }, 1500));
 
     }
     const getEnemy = (player, enemy) => {
@@ -248,9 +250,9 @@ export default function App() {
     const capture = () => {
         setGamestate('');
         clearInterval(intervalIdEnemy);
-        setPlayersArray(prev => [...prev, enemy.name]);
         if (!playersArray.includes(enemy.name)) {
             localStorage.setItem('playersArray', JSON.stringify([...playersArray, enemy.name]));
+            setPlayersArray(prev => [...prev, enemy.name]);
         }
         const playerPromise = new PokemonClass(playersArray[0])
         playerPromise.then((playerInstance) => {
@@ -262,6 +264,8 @@ export default function App() {
 
     const continueGame = () => {
         setGamestate('');
+        player.setStat('hp', 0);
+        setPlayer(player)
         clearInterval(intervalIdEnemy);
         setPlayersArray(playersArray);
         const playerPromise = new PokemonClass(playersArray[0])

@@ -62,7 +62,7 @@ export default function Deck({ playersArray = [], activePokemon, setPlayersArray
     }
     return (
         <div className="lineup-container">
-            <h5>Your Deck</h5>
+            <h5>Your Deck<small>{deck.length} cards</small></h5>
             {error && <p style={{ color: "red" }}>Error: {error}</p>}
             <div className="deck-grid">
                 {playersArray.map(card => {
