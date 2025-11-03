@@ -35,9 +35,11 @@ body {
         transform: translateY(0);
         opacity: 1;
     }
+
     60% {
         opacity: 1;
     }
+
     100% {
         transform: translateY(-50px);
         opacity: 0;
@@ -440,16 +442,60 @@ body {
 }
 
 @media (max-width: 768px) {
+    .header-content {
+        gap: 0.6rem;
+    }
+
+    .game-header {
+        padding: 0.3rem 0.6rem;
+        box-shadow: none;
+    }
+
     .game-app {
-        padding: 1.5rem 0.7rem 2rem;
+        padding: .2rem;
+        width: 100vw;
+        gap: 0;
     }
 
     .battle-stage {
         gap: 0.9rem;
     }
 
+    img.pokemon-image {
+        /* height: 100px; */
+    }
+
     .action-button {
-        width: 100%;
+        width: auto;
         margin-right: 0;
+        margin-bottom: 0.6rem;
+        font-size: smaller;
+        padding: 0.6rem 1.2rem;
+        border: 1.5px solid rgba(0, 0, 0, 0.441);
+    }
+
+    .action-button:not(:disabled):hover {
+        transform: translateY(-3px) scale(.9);
+        filter: brightness(1);
+    }
+    .action-button:disabled {
+        box-shadow: none;
+    }   
+    .pokemon-card {
+        /* width: 160px;
+        height: 480px; */
+    }
+
+    .pokemon-name {}
+
+    .pokemon-stats {}
+}
+
+/* Disable hover effects on touch/small-screen devices */
+@media (hover: none), (pointer: coarse), (max-width: 768px) {
+    .action-button:hover {
+        transform: none !important;
+        box-shadow: 0 14px 28px rgba(255, 95, 109, 0.35) !important;
+        filter: none !important;
     }
 }
